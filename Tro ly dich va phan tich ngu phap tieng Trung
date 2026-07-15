@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ Lý Dịch & Phân Tích Cú Pháp Tiếng Trung HSK</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Be Vietnam Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #FFF8F7;
+        }
+        /* Custom scrollbar for beautiful UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF8F7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFDADA;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A24058;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-[#1D1B1E] bg-[#FFF8F7] flex flex-col antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-[#FFF8F7] text-[#1D1B1E] border-b border-[#F5EEEE]">
+        <div class="max-w-6xl mx-auto px-4 py-6 md:py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-center md:text-left">
+                <div class="inline-flex items-center gap-2 text-[#A24058] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-2 justify-center md:justify-start">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i> HSK Học tập trực quan
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-[#201A1B]">Trợ Lý Dịch & Phân Tích Cú Pháp Tiếng Trung HSK</h1>
+                <p class="text-[#4F4446] text-sm md:text-base mt-1 max-w-2xl">Bóc tách từ vựng, phiên âm pinyin và phân tích cấu trúc ngữ pháp thông minh cho người tự học.</p>
+            </div>
+            <div class="flex items-center gap-2 bg-[#FFDADA] px-4 py-2 rounded-xl border border-transparent">
+                <div class="w-2.5 h-2.5 bg-[#A24058] rounded-full animate-pulse"></div>
+                <span class="text-xs font-bold text-[#3B0912]">Sẵn sàng phân tích</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Input and Quick-Buttons -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- Input Card -->
+            <div class="bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] p-5 md:p-6 transition-all duration-300 hover:shadow-md">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-md font-semibold text-[#201A1B] flex items-center gap-2">
+                        <i data-lucide="pen-tool" class="w-5 h-5 text-[#A24058]"></i>
+                        Nhập Câu Tiếng Trung
+                    </h2>
+                    <button id="btn-clear" class="text-xs text-[#857376] hover:text-[#A24058] flex items-center gap-1 transition-colors">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Xóa nhanh
+                    </button>
+                </div>
+                
+                <div class="relative bg-[#F5EEEE] rounded-[24px] p-4 border border-transparent focus-within:border-[#A24058] transition-colors">
+                    <textarea id="chinese-input" 
+                              class="w-full h-32 md:h-36 bg-transparent border-none outline-none resize-none text-[#1D1B1E] text-lg placeholder-[#4F4446] transition-all font-sans"
+                              placeholder="Nhập câu tiếng Trung của bạn tại đây... Ví dụ: 今天天气很好，我想去公园散步。"></textarea>
+                    
+                    <div id="char-counter" class="absolute bottom-3 right-3 text-xs text-[#857376] font-medium">0 ký tự</div>
+                </div>
+
+                <div class="mt-4 flex gap-3">
+                    <button id="btn-analyze" class="flex-1 bg-[#A24058] hover:bg-[#8d3248] text-white font-semibold py-3 px-5 rounded-full shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm md:text-base">
+                        <i data-lucide="activity" class="w-4 h-4"></i>
+                        <span>Bắt đầu Phân Tích</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Example Quick-Buttons -->
+            <div class="bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] p-5 md:p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="library" class="w-5 h-5 text-[#A24058]"></i>
+                    <h2 class="text-md font-semibold text-[#201A1B]">Mẫu Câu Kinh Điển (HSK 1 - 5)</h2>
+                </div>
+                
+                <div class="flex flex-col gap-4">
+                    <!-- Category 1 -->
+                    <div>
+                        <h3 class="text-xs font-bold text-[#857376] uppercase tracking-[0.1em] mb-2">Giao tiếp & Thời gian</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="我喜欢学汉语。">我喜欢学汉语。</button>
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="刚下过雨，空气非常新鲜。">刚下过雨，空气非常新鲜。</button>
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="我学汉语学了两年。">我学汉语学了两年。</button>
+                        </div>
+                    </div>
+
+                    <!-- Category 2 -->
+                    <div>
+                        <h3 class="text-xs font-bold text-[#857376] uppercase tracking-[0.1em] mb-2">Cú pháp đặc biệt (把 / 被)</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="把地上の垃圾捡起来。">把地상의垃圾捡起来。</button>
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="那本书被他借走了。">那本书被他借走了。</button>
+                        </div>
+                    </div>
+
+                    <!-- Category 3 -->
+                    <div>
+                        <h3 class="text-xs font-bold text-[#857376] uppercase tracking-[0.1em] mb-2">Câu phức & So sánh</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="他跑得比我快多了。">他跑得比我快多了。</button>
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="虽然汉语很难，但是我很感兴趣。">虽然汉语很难...</button>
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="除了看电影，我还喜欢听音乐。">除了看电影...</button>
+                        </div>
+                    </div>
+
+                    <!-- Category 4 -->
+                    <div>
+                        <h3 class="text-xs font-bold text-[#857376] uppercase tracking-[0.1em] mb-2">Giả thiết & Điều kiện</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="要是明天不下雨，我们就去爬山。">要是明天不下雨...</button>
+                            <button class="quick-btn bg-white border border-[#EADDFF] text-[#1D1B1E] hover:bg-[#FFDADA] hover:text-[#3B0912] px-3 py-1.5 rounded-full text-xs font-medium transition-all" data-sentence="只有努力学习，才能取得好成绩。">只有努力学习...</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Analysis Board -->
+        <section class="lg:col-span-7">
+            
+            <!-- Welcome / Empty State -->
+            <div id="board-empty" class="bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] p-8 text-center h-full flex flex-col justify-center items-center min-h-[350px]">
+                <div class="bg-[#FFDADA] w-16 h-16 rounded-full flex items-center justify-center text-[#A24058] mb-4 animate-bounce">
+                    <i data-lucide="sparkles" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-[#201A1B] mb-2">Bảng Phân Tích Đang Trống</h3>
+                <p class="text-[#4F4446] text-sm max-w-sm mx-auto mb-6">Hãy nhập câu tiếng Trung bên trái hoặc nhấn một nút mẫu kinh điển để khởi chạy phân tích ngữ pháp, từ vựng theo chuẩn HSK.</p>
+                <div class="flex flex-wrap gap-2 justify-center max-w-md">
+                    <span class="text-xs bg-[#F5EEEE] text-[#4F4446] px-3 py-1.5 rounded-full font-medium">Bóc tách Pinyin</span>
+                    <span class="text-xs bg-[#F5EEEE] text-[#4F4446] px-3 py-1.5 rounded-full font-medium">Dịch Nghĩa Tự Nhiên</span>
+                    <span class="text-xs bg-[#F5EEEE] text-[#4F4446] px-3 py-1.5 rounded-full font-medium">Tag Cấp Độ HSK</span>
+                    <span class="text-xs bg-[#F5EEEE] text-[#4F4446] px-3 py-1.5 rounded-full font-medium">So Sánh Ngữ Pháp</span>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="board-loading" class="hidden bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] p-8 text-center h-full flex flex-col justify-center items-center min-h-[350px]">
+                <div class="relative flex items-center justify-center mb-6">
+                    <!-- Spinning circle outer -->
+                    <div class="w-16 h-16 border-4 border-[#FFDADA] border-t-[#A24058] rounded-full animate-spin"></div>
+                    <!-- Inner static icon -->
+                    <i data-lucide="bot" class="w-6 h-6 text-[#A24058] absolute"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-[#201A1B] mb-1">Giảng Viên AI Đang Phân Tích...</h3>
+                <p class="text-[#857376] text-sm max-w-sm mx-auto animate-pulse">Quá trình này bóc tách ngữ pháp, tra từ điển HSK và dịch nghĩa. Vui lòng đợi trong giây lát.</p>
+            </div>
+
+            <!-- Active Analysis Board Content -->
+            <div id="board-results" class="hidden flex flex-col gap-6">
+                
+                <!-- Main Sentence and Translation -->
+                <div class="bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] overflow-hidden">
+                    <div class="bg-[#FFF1F2] px-6 py-4 border-b border-[#F5EEEE] flex items-center justify-between">
+                        <span class="text-xs font-bold text-[#A24058] uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="languages" class="w-3.5 h-3.5"></i> Kết quả dịch nghĩa
+                        </span>
+                        <span id="analysis-badge" class="text-xs bg-[#A24058] text-white font-semibold px-2.5 py-1 rounded-full shadow-sm">AI Phản hồi</span>
+                    </div>
+                    
+                    <div class="p-6 md:p-8 flex flex-col gap-4">
+                        <!-- Original sentence -->
+                        <div class="text-center py-2">
+                            <p id="result-pinyin" class="text-[#857376] font-mono text-xs md:text-sm tracking-widest mb-1 uppercase select-all"></p>
+                            <h2 id="result-chinese" class="text-2xl md:text-3.5xl font-bold text-[#201A1B] tracking-normal select-all"></h2>
+                        </div>
+                        
+                        <hr class="border-[#F5EEEE] my-2">
+
+                        <!-- Vietnamese Translation -->
+                        <div>
+                            <span class="text-xs font-bold text-[#857376] uppercase tracking-wider block mb-1">Dịch Nghĩa Tiếng Việt</span>
+                            <div class="bg-[#FDF8F9] border-l-4 border-[#A24058] rounded-r-xl p-4">
+                                <p id="result-translation" class="text-[#201A1B] text-lg font-medium leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vocabulary Table Card -->
+                <div class="bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] p-5 md:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-md font-semibold text-[#201A1B] flex items-center gap-2">
+                            <i data-lucide="book-open" class="w-5 h-5 text-[#A24058]"></i>
+                            Phân Tích Chi Tiết Từ Vựng
+                        </h3>
+                        <span class="text-xs text-[#857376]">Chạm để xem kĩ</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto rounded-xl border border-[#F5EEEE]">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#FDF8F9] text-[#857376] uppercase text-[10px] tracking-wider border-b border-[#F5EEEE]">
+                                    <th class="py-3 px-4 font-bold">Từ vựng</th>
+                                    <th class="py-3 px-4 font-bold">Phiên âm</th>
+                                    <th class="py-3 px-4 font-bold">Ý nghĩa</th>
+                                    <th class="py-3 px-4 font-bold text-center">HSK</th>
+                                </tr>
+                            </thead>
+                            <tbody id="result-vocab-body" class="divide-y divide-[#F5EEEE] text-sm text-[#1D1B1E]">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Grammar Analysis Section -->
+                <div class="bg-white rounded-[32px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-[#F5EEEE] p-5 md:p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="git-branch" class="w-5 h-5 text-[#A24058]"></i>
+                        <h3 class="text-md font-semibold text-[#201A1B]">Phân Tích Cú Pháp & Ngữ Pháp</h3>
+                    </div>
+                    
+                    <div id="result-grammar-container" class="flex flex-col gap-4">
+                        <!-- Dynamic grammar cards -->
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#FFF8F7] text-[#857376] border-t border-[#F5EEEE] py-6 text-center text-xs mt-auto">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 Trợ Lý Dịch & Phân Tích Cú Pháp Tiếng Trung HSK. Thiết kế cho cộng đồng tự học tiếng Trung.</p>
+            <div class="flex items-center gap-4">
+                <span class="hover:text-[#A24058] transition-colors duration-200">Phiên bản 2.5</span>
+                <span class="text-[#F5EEEE]">|</span>
+                <span class="hover:text-[#A24058] transition-colors duration-200 flex items-center gap-1">
+                    <i data-lucide="shield" class="w-3.5 h-3.5 text-[#A24058]"></i> Dữ liệu bảo mật
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Logic Script -->
+    <script>
+        // API Configuration
+        const GEMINI_API_KEY = "AQ.Ab8RN6JEu-OczjIHBkIjZunr8o7ZTxS58NoSzPR3JwMl68wRZQ";
+        const GEMINI_MODEL = "gemini-2.0-flash";
+
+        // DOM elements
+        const txtInput = document.getElementById("chinese-input");
+        const btnAnalyze = document.getElementById("btn-analyze");
+        const btnClear = document.getElementById("btn-clear");
+        const charCounter = document.getElementById("char-counter");
+        
+        const boardEmpty = document.getElementById("board-empty");
+        const boardLoading = document.getElementById("board-loading");
+        const boardResults = document.getElementById("board-results");
+        
+        const resPinyin = document.getElementById("result-pinyin");
+        const resChinese = document.getElementById("result-chinese");
+        const resTranslation = document.getElementById("result-translation");
+        const resVocabBody = document.getElementById("result-vocab-body");
+        const resGrammarContainer = document.getElementById("result-grammar-container");
+        const badgeAnalysis = document.getElementById("analysis-badge");
+
+        // Offline Database (Minimum 10 entries)
+        const OFFLINE_DB = {
+            "我喜欢学汉语。": {
+                "translation": "Tôi thích học tiếng Trung.",
+                "pinyin": "Wǒ xǐhuan xué Hànyǔ.",
+                "vocabulary": [
+                    { "word": "我", "pinyin": "wǒ", "meaning": "Tôi, tớ, mình", "hsk": "1" },
+                    { "word": "喜欢", "pinyin": "xǐhuan", "meaning": "Thích, yêu thích", "hsk": "1" },
+                    { "word": "学", "pinyin": "xué", "meaning": "Học, học tập", "hsk": "1" },
+                    { "word": "汉语", "pinyin": "Hànyǔ", "meaning": "Tiếng Trung, tiếng Hán", "hsk": "1" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Cấu trúc động từ liên tiếp (Động từ liên động)",
+                        "explanation": "喜欢 + Động từ: dùng để biểu thị sở thích làm một việc gì đó một cách lâu dài.",
+                        "comparison": "So sánh với cấu trúc '想' (muốn): '想' chỉ ý định nhất thời hoặc ước muốn có thể thay đổi, còn '喜欢' là sở thích ổn định dài lâu."
+                    }
+                ]
+            },
+            "虽然汉语很难，但是我很感兴趣。": {
+                "translation": "Tuy tiếng Trung rất khó nhưng tôi rất có hứng thú.",
+                "pinyin": "Suīrán Hànyǔ hěn nán, dànshì wǒ hěn gǎn xìngqù.",
+                "vocabulary": [
+                    { "word": "虽然", "pinyin": "suīrán", "meaning": "Mặc dù, tuy nhiên", "hsk": "3" },
+                    { "word": "汉语", "pinyin": "Hànyǔ", "meaning": "Tiếng Trung", "hsk": "1" },
+                    { "word": "很", "pinyin": "hěn", "meaning": "Rất", "hsk": "1" },
+                    { "word": "难", "pinyin": "nán", "meaning": "Khó", "hsk": "1" },
+                    { "word": "但是", "pinyin": "dànshì", "meaning": "Nhưng, nhưng mà", "hsk": "2" },
+                    { "word": "感", "pinyin": "gǎn", "meaning": "Cảm thấy, cảm giác", "hsk": "3" },
+                    { "word": "兴趣", "pinyin": "xìngqù", "meaning": "Hứng thú, sở thích", "hsk": "3" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Liên từ biểu thị quan hệ nhượng bộ: 虽然...但是...",
+                        "explanation": "Mặc dù... nhưng... Sử dụng để liên kết hai phân cú tương phản ý nghĩa.",
+                        "comparison": "Lưu ý: Khác với tiếng Việt thường bỏ 'nhưng' khi có 'mặc dù', tiếng Trung bắt buộc phải đi kèm cả cặp '虽然...但是...' hoặc ít nhất có 'định/可是' ở vế sau."
+                    },
+                    {
+                        "point": "Cấu trúc biểu thị sự quan tâm: 对...感兴趣",
+                        "explanation": "Có hứng thú với cái gì. Giới từ '对' đứng trước đối tượng gây hứng thú.",
+                        "comparison": "Để phủ định, ta dùng '对... không感兴趣' (Không có hứng thú với...)."
+                    }
+                ]
+            },
+            "他跑得比我快多了。": {
+                "translation": "Anh ấy chạy nhanh hơn tôi nhiều.",
+                "pinyin": "Tā pǎo de bǐ wǒ kuài duō le.",
+                "vocabulary": [
+                    { "word": "他", "pinyin": "tā", "meaning": "Anh ấy, cậu ấy", "hsk": "1" },
+                    { "word": "跑", "pinyin": "pǎo", "meaning": "Chạy", "hsk": "2" },
+                    { "word": "得", "pinyin": "de", "meaning": "Trợ từ liên kết động từ và trạng ngữ", "hsk": "2" },
+                    { "word": "比", "pinyin": "bǐ", "meaning": "So với, hơn", "hsk": "2" },
+                    { "word": "我", "pinyin": "wǒ", "meaning": "Tôi, tớ", "hsk": "1" },
+                    { "word": "快", "pinyin": "kuài", "meaning": "Nhanh", "hsk": "2" },
+                    { "word": "多了", "pinyin": "duō le", "meaning": "Nhiều, hơn nhiều", "hsk": "2" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Bổ ngữ trạng thái (Bổ ngữ mức độ) với '得'",
+                        "explanation": "Động từ + 得 + Trạng từ/Tính từ: Dùng để đánh giá hoặc miêu tả trạng thái, kết quả của hành động.",
+                        "comparison": "Phân biệt với '的' (định ngữ) và '地' (trạng ngữ đứng trước động từ)."
+                    },
+                    {
+                        "point": "Cấu trúc so sánh hơn dùng giới từ '比'",
+                        "explanation": "A + 比 + B + Tính từ + (多了/得多): Thể hiện mức độ chênh lệch lớn giữa hai chủ thể.",
+                        "comparison": "Chú ý: Trong câu so sánh chữ '比', không được dùng các phó từ chỉ mức độ như '很', '非常' trước tính từ so sánh (Không nói: 比我很快 ❌)."
+                    }
+                ]
+            },
+            "要是明天不下雨，我们就去爬山。": {
+                "translation": "Nếu ngày mai không mưa thì chúng ta đi leo núi.",
+                "pinyin": "Yàoshi míngtiān bù xià yǔ, wǒmen jiù qù pá shān.",
+                "vocabulary": [
+                    { "word": "要是", "pinyin": "yàoshi", "meaning": "Nếu, nếu như", "hsk": "3" },
+                    { "word": "明天", "pinyin": "míngtiān", "meaning": "Ngày mai", "hsk": "1" },
+                    { "word": "不", "pinyin": "bù", "meaning": "Không", "hsk": "1" },
+                    { "word": "下雨", "pinyin": "xià yǔ", "meaning": "Mưa, rơi mưa", "hsk": "1" },
+                    { "word": "我们", "pinyin": "wǒmen", "meaning": "Chúng tôi, chúng ta", "hsk": "1" },
+                    { "word": "就", "pinyin": "jiù", "meaning": "Thì, liền, ngay", "hsk": "2" },
+                    { "word": "去", "pinyin": "qù", "meaning": "Đi", "hsk": "1" },
+                    { "word": "爬山", "pinyin": "pá shān", "meaning": "Leo núi, dã ngoại núi", "hsk": "3" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Cấu trúc câu giả thiết: 要eshi...就...",
+                        "explanation": "Nếu... thì... Vế '要是' đưa ra giả định, vế '就' nêu kết quả tương ứng xảy ra.",
+                        "comparison": "Cấu trúc tương đồng: 'अगर...就...'. '要是' được dùng nhiều hơn trong khẩu ngữ giao tiếp hàng ngày, mang sắc thái bình dị thân thuộc hơn."
+                    }
+                ]
+            },
+            "除了看电影，我还喜欢听音乐。": {
+                "translation": "Ngoài xem phim ra, tôi còn thích nghe nhạc.",
+                "pinyin": "Chúle kàn diànyǐng, wǒ hái xǐhuan tīng yīnyuè.",
+                "vocabulary": [
+                    { "word": "除了", "pinyin": "chúle", "meaning": "Ngoài ra, ngoại trừ", "hsk": "3" },
+                    { "word": "看", "pinyin": "kàn", "meaning": "Xem, nhìn, đọc", "hsk": "1" },
+                    { "word": "电影", "pinyin": "diànyǐng", "meaning": "Phim ảnh, phim chiếu rạp", "hsk": "1" },
+                    { "word": "我", "pinyin": "wǒ", "meaning": "Tôi, tớ", "hsk": "1" },
+                    { "word": "还", "pinyin": "hái", "meaning": "Còn, vẫn còn", "hsk": "2" },
+                    { "word": "喜欢", "pinyin": "xǐhuan", "meaning": "Thích", "hsk": "1" },
+                    { "word": "听", "pinyin": "tīng", "meaning": "Nghe", "hsk": "1" },
+                    { "word": "音乐", "pinyin": "yīnyuè", "meaning": "Âm nhạc, nhạc", "hsk": "3" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Cấu trúc loại trừ bổ sung: 除了...还...",
+                        "explanation": "Ngoài... ra thì còn... Thể hiện việc bổ sung thêm một yếu tố khác cùng nhóm sở thích hoặc tính chất.",
+                        "comparison": "So sánh với '除了...都...': mang nghĩa loại trừ tuyệt đối (Ví dụ: Ngoài anh ấy ra, mọi người đều đi học -> 除了他，大家都去学校了。)"
+                    }
+                ]
+            },
+            "把地上の垃圾捡起来。": {
+                "translation": "Hãy nhặt rác trên mặt đất lên.",
+                "pinyin": "Bǎ dìshang de lājī jiǎn qǐlái.",
+                "vocabulary": [
+                    { "word": "把", "pinyin": "bǎ", "meaning": "Giới từ dùng để đưa tân ngữ lên trước động từ", "hsk": "3" },
+                    { "word": "地上", "pinyin": "dìshang", "meaning": "Trên mặt đất, sàn nhà", "hsk": "2" },
+                    { "word": "的", "pinyin": "de", "meaning": "Trợ từ sở hữu", "hsk": "1" },
+                    { "word": "垃圾", "pinyin": "lājī", "meaning": "Rác rưởi, phế thải", "hsk": "4" },
+                    { "word": "捡", "pinyin": "jiǎn", "meaning": "Nhặt, lượm, thu gom", "hsk": "4" },
+                    { "word": "起来", "pinyin": "qǐlái", "meaning": "Bổ ngữ xu hướng (lên, hướng lên)", "hsk": "3" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Cú pháp câu chữ '把' (Câu xử lý)",
+                        "explanation": "Chủ ngữ + 把 + Tân ngữ + Động từ + Thành phần khác. Nhấn mạnh tác động làm thay đổi vị trí, trạng thái của tân ngữ.",
+                        "comparison": "Lưu ý: Động từ trong câu chữ '把' phải là động từ mang tính tác động mạnh và bắt buộc phải có thành phần phụ đi kèm (như bổ ngữ, trợ từ)."
+                    },
+                    {
+                        "point": "Bổ ngữ xu hướng ghép: 起来",
+                        "explanation": "Động từ + 起来: Biểu thị động tác hướng từ dưới lên trên, hoặc bắt đầu một hành động và tiếp tục phát triển.",
+                        "comparison": "Ở đây '捡起来' nghĩa là nhặt hướng lên trên, rời khỏi mặt đất."
+                    }
+                ]
+            },
+            "那本书被他借走了。": {
+                "translation": "Cuốn sách đó bị anh ấy mượn đi rồi.",
+                "pinyin": "Nà běn shū bèi tā jiè zǒu le.",
+                "vocabulary": [
+                    { "word": "那", "pinyin": "nà", "meaning": "Kia, đó", "hsk": "1" },
+                    { "word": "本", "pinyin": "běn", "meaning": "Lượng từ cho sách vở", "hsk": "1" },
+                    { "word": "书", "pinyin": "shū", "meaning": "Sách", "hsk": "1" },
+                    { "word": "被", "pinyin": "bèi", "meaning": "Bị, được (giới từ bị động)", "hsk": "3" },
+                    { "word": "他", "pinyin": "tā", "meaning": "Anh ấy, hắn", "hsk": "1" },
+                    { "word": "借", "pinyin": "jiè", "meaning": "Mượn, vay", "hsk": "3" },
+                    { "word": "走", "pinyin": "zǒu", "meaning": "Đi, di chuyển (biểu thị rời đi)", "hsk": "2" },
+                    { "word": "了", "pinyin": "le", "meaning": "Trợ từ ngữ khí hoàn thành", "hsk": "1" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Câu bị động dùng giới từ '被'",
+                        "explanation": "Danh từ chịu tác động + 被 + Chủ thể thực hiện + Động từ + Thành phần khác. Thường mang sắc thái không mong muốn hoặc trung tính.",
+                        "comparison": "Trong văn nói, '被' có thể được thay thế bằng '让' (ràng) hoặc '叫' (jiào) nhưng cấu trúc có chút thay đổi."
+                    },
+                    {
+                        "point": "Bổ ngữ kết quả: 走",
+                        "explanation": "Động từ + 走: Biểu thị hành động làm cho vật rời đi hoặc biến mất khỏi vị trí hiện tại.",
+                        "comparison": "Ví dụ: '借走' (mượn đi), '拿走' (lấy đi)."
+                    }
+                ]
+            },
+            "我学汉语学了两年。": {
+                "translation": "Tôi học tiếng Trung được hai năm rồi.",
+                "pinyin": "Wǒ xué Hànyǔ xué le liǎng nián.",
+                "vocabulary": [
+                    { "word": "我", "pinyin": "wǒ", "meaning": "Tôi", "hsk": "1" },
+                    { "word": "学", "pinyin": "xué", "meaning": "Học", "hsk": "1" },
+                    { "word": "汉语", "pinyin": "Hànyǔ", "meaning": "Tiếng Trung", "hsk": "1" },
+                    { "word": "了", "pinyin": "le", "meaning": "Trợ từ động thái", "hsk": "1" },
+                    { "word": "两年", "pinyin": "liǎng nián", "meaning": "Hai năm", "hsk": "1" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Cấu trúc lặp lại động từ khi có bổ ngữ thời lượng",
+                        "explanation": "Chủ ngữ + Động từ + Tân ngữ + Lặp lại Động từ + 了 + Khoảng thời gian. Dùng khi động từ mang tân ngữ và ta muốn nói về thời gian thực hiện.",
+                        "comparison": "Cấu trúc rút gọn tương đương: 我学 liao 两年 de 汉语 (Tôi học hai năm tiếng Trung). Cả hai cách dùng đều hoàn toàn chính xác."
+                    }
+                ]
+            },
+            "刚下过雨，空气非常新鲜。": {
+                "translation": "Vừa mới mưa xong, không khí vô cùng trong lành.",
+                "pinyin": "Gāng xià guo yǔ, kōngqì fēicháng xīnxiān.",
+                "vocabulary": [
+                    { "word": "刚", "pinyin": "gāng", "meaning": "Vừa mới, vừa vặn", "hsk": "3" },
+                    { "word": "下雨", "pinyin": "xià yǔ", "meaning": "Mưa", "hsk": "1" },
+                    { "word": "过", "pinyin": "guo", "meaning": "Trợ từ động thái chỉ kinh nghiệm đã qua", "hsk": "2" },
+                    { "word": "空气", "pinyin": "kōngqì", "meaning": "Không khí", "hsk": "4" },
+                    { "word": "非常", "pinyin": "fēicháng", "meaning": "Rất, cực kỳ, bất thường", "hsk": "2" },
+                    { "word": "新鲜", "pinyin": "xīnxiān", "meaning": "Trong lành, tươi mới", "hsk": "3" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Phó từ chỉ thời gian '刚' (Vừa mới)",
+                        "explanation": "Đứng trước động từ biểu thị hành động xảy ra chỉ một thời gian rất ngắn trước thời điểm phát ngôn.",
+                        "comparison": "Phân biệt '刚' (phó từ, đứng sau chủ ngữ) và '刚才' (danh từ thời gian, có thể đứng trước chủ ngữ)."
+                    },
+                    {
+                        "point": "Trợ từ kinh nghiệm '过'",
+                        "explanation": "Động từ + 过: Biểu thị hành động đã từng xảy ra, nay đã kết thúc hoàn toàn trong quá khứ.",
+                        "comparison": "Khác với '了' nhấn mạnh vào trạng thái hoàn thành đổi mới, '过' nhấn mạnh tính chất trải nghiệm."
+                    }
+                ]
+            },
+            "只有努力学习，才能取得好成绩。": {
+                "translation": "Chỉ có nỗ lực học tập thì mới đạt được thành tích tốt.",
+                "pinyin": "Zhǐyǒu nǔlì xuéxí, cái néng qǔdé hǎo chéngjī.",
+                "vocabulary": [
+                    { "word": "只有", "pinyin": "zhǐyǒu", "meaning": "Chỉ có", "hsk": "3" },
+                    { "word": "努力", "pinyin": "nǔlì", "meaning": "Nỗ lực, chăm chỉ", "hsk": "3" },
+                    { "word": "学习", "pinyin": "xuéxí", "meaning": "Học tập", "hsk": "1" },
+                    { "word": "才", "pinyin": "cái", "meaning": "Mới (phó từ nhấn mạnh)", "hsk": "3" },
+                    { "word": "能", "pinyin": "néng", "meaning": "Có thể", "hsk": "1" },
+                    { "word": "取得", "pinyin": "qǔdé", "meaning": "Đạt được, giành được", "hsk": "4" },
+                    { "word": "好", "pinyin": "hǎo", "meaning": "Tốt, đẹp", "hsk": "1" },
+                    { "word": "成绩", "pinyin": "chéngjī", "meaning": "Thành tích, kết quả học tập", "hsk": "3" }
+                ],
+                "grammar_analysis": [
+                    {
+                        "point": "Cấu trúc điều kiện duy nhất: 只有...才...",
+                        "explanation": "Chỉ có... mới... Phân cú 'only有' đưa ra điều kiện duy nhất cần thiết, phân cú '才' biểu thị kết quả đạt được.",
+                        "comparison": "So sánh với '只要...就...' (Chỉ cần... là...): '只要' là điều kiện đủ (có điều kiện là có kết quả ngay), còn '只有' là điều kiện cần bắt buộc (thiếu nó thì chắc chắn không đạt được)."
+                    }
+                ]
+            }
+        };
+
+        // Initialize Lucide Icons
+        window.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            updateCharCounter();
+        });
+
+        // Event Listeners
+        txtInput.addEventListener("input", updateCharCounter);
+        
+        btnClear.addEventListener("click", () => {
+            txtInput.value = "";
+            updateCharCounter();
+            txtInput.focus();
+        });
+
+        // Setup Quick Buttons
+        document.querySelectorAll(".quick-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const text = btn.getAttribute("data-sentence");
+                // Standardize custom prompt variation
+                let realText = text;
+                if (text === "我学汉语学了两年。") {
+                    realText = "我学汉语学了两年。";
+                }
+                txtInput.value = realText;
+                updateCharCounter();
+                analyzeSentence(realText);
+            });
+        });
+
+        btnAnalyze.addEventListener("click", () => {
+            const inputVal = txtInput.value.trim();
+            if (!inputVal) {
+                alert("Vui lòng nhập câu tiếng Trung cần phân tích!");
+                txtInput.focus();
+                return;
+            }
+            analyzeSentence(inputVal);
+        });
+
+        function updateCharCounter() {
+            const len = txtInput.value.length;
+            charCounter.textContent = `${len} ký tự`;
+        }
+
+        // Display results to UI
+        function displayResults(data, mode = "AI") {
+            // Fill headers
+            resChinese.textContent = data.chinese_original || txtInput.value.trim();
+            resPinyin.textContent = data.pinyin || "";
+            resTranslation.textContent = data.translation || "";
+            
+            // Set badge theme
+            if (mode === "API") {
+                badgeAnalysis.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5 inline mr-1"></i> Trí tuệ nhân tạo Gemini 2.0`;
+                badgeAnalysis.className = "text-xs bg-[#A24058] text-white font-semibold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1";
+            } else {
+                badgeAnalysis.innerHTML = `<i data-lucide="database" class="w-3.5 h-3.5 inline mr-1"></i> Thư viện Ngoại tuyến`;
+                badgeAnalysis.className = "text-xs bg-[#857376] text-white font-semibold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1";
+            }
+            
+            // Build vocabulary table rows
+            resVocabBody.innerHTML = "";
+            if (data.vocabulary && data.vocabulary.length > 0) {
+                data.vocabulary.forEach(item => {
+                    const row = document.createElement("tr");
+                    row.className = "hover:bg-[#FDF8F9] transition-colors";
+                    
+                    // Style HSK tags depending on level
+                    let hskTag = "";
+                    const level = parseInt(item.hsk) || 1;
+                    if (level === 1) {
+                        hskTag = `<span class="bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9] px-2 py-0.5 rounded-full text-xs font-semibold">HSK ${level}</span>`;
+                    } else if (level === 2) {
+                        hskTag = `<span class="bg-[#C4EED0] text-[#072711] border border-[#A9DFBF] px-2 py-0.5 rounded-full text-xs font-semibold">HSK ${level}</span>`;
+                    } else if (level === 3) {
+                        hskTag = `<span class="bg-[#D3E2FF] text-[#001D36] border border-[#B2CFFF] px-2 py-0.5 rounded-full text-xs font-semibold">HSK ${level}</span>`;
+                    } else if (level === 4) {
+                        hskTag = `<span class="bg-[#FFE0B2] text-[#E65100] border border-[#FFCC80] px-2 py-0.5 rounded-full text-xs font-semibold">HSK ${level}</span>`;
+                    } else if (level === 5) {
+                        hskTag = `<span class="bg-[#F8BBD0] text-[#C2185B] border border-[#F48FB1] px-2 py-0.5 rounded-full text-xs font-semibold">HSK ${level}</span>`;
+                    } else {
+                        hskTag = `<span class="bg-[#E1BEE7] text-[#4A148C] border border-[#CE93D8] px-2 py-0.5 rounded-full text-xs font-semibold">HSK ${level}</span>`;
+                    }
+ 
+                    row.innerHTML = `
+                        <td class="py-3 px-4 font-bold text-[#201A1B] text-base">${item.word}</td>
+                        <td class="py-3 px-4 text-[#A24058] font-medium">${item.pinyin}</td>
+                        <td class="py-3 px-4 text-[#4F4446]">${item.meaning}</td>
+                        <td class="py-3 px-4 text-center">${hskTag}</td>
+                    `;
+                    resVocabBody.appendChild(row);
+                });
+            } else {
+                resVocabBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-[#857376]">Không tìm thấy phân tích từ vựng riêng lẻ.</td></tr>`;
+            }
+ 
+            // Build grammar cards
+            resGrammarContainer.innerHTML = "";
+            if (data.grammar_analysis && data.grammar_analysis.length > 0) {
+                data.grammar_analysis.forEach(g => {
+                    const card = document.createElement("div");
+                    card.className = "p-4 bg-[#FFF1F2] rounded-2xl border border-[#FFDADA] flex flex-col gap-2";
+                    
+                    card.innerHTML = `
+                        <div>
+                            <div class="inline-flex items-center gap-1.5 bg-[#FFDADA] text-[#3B0912] text-[10px] px-2.5 py-1 rounded-full font-bold mb-2">
+                                <i data-lucide="tag" class="w-3 h-3"></i> Cấu trúc ngữ pháp
+                            </div>
+                            <h4 class="text-sm font-bold text-[#201A1B] md:text-base">${g.point}</h4>
+                        </div>
+                        <p class="text-xs md:text-sm text-[#534346] leading-relaxed">${g.explanation}</p>
+                        ${g.comparison ? `
+                        <div class="bg-white/50 p-2 rounded-lg mt-2">
+                            <span class="text-[10px] font-bold text-[#A24058] uppercase tracking-wider flex items-center gap-1 mb-1">
+                                <i data-lucide="info" class="w-3 h-3"></i> So sánh & Lưu ý mở rộng
+                            </span>
+                            <p class="text-[10px] text-[#A24058] font-bold italic leading-relaxed">${g.comparison}</p>
+                        </div>
+                        ` : ''}
+                    `;
+                    resGrammarContainer.appendChild(card);
+                });
+            } else {
+                resGrammarContainer.innerHTML = `<p class="text-[#857376] text-center py-4 text-sm">Câu đơn giản, tập trung chủ yếu vào từ vựng cơ bản.</p>`;
+            }
+
+            // Create fresh Lucide icons for injected elements
+            lucide.createIcons();
+
+            // Toggle screens
+            boardEmpty.classList.add("hidden");
+            boardLoading.classList.add("hidden");
+            boardResults.classList.remove("hidden");
+            
+            // Scroll results into view on mobile
+            if (window.innerWidth < 1024) {
+                boardResults.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Clean markdown JSON response before parsing
+        function cleanJSONString(rawStr) {
+            let clean = rawStr.trim();
+            if (clean.startsWith("```")) {
+                // Remove opening markdown block
+                clean = clean.replace(/^```json\s*/i, "").replace(/^```\s*/, "");
+                // Remove closing markdown block
+                clean = clean.replace(/\s*```$/, "");
+            }
+            return clean.trim();
+        }
+
+        // Main analyzer controller
+        async function analyzeSentence(sentence) {
+            // Show loading view
+            boardEmpty.classList.add("hidden");
+            boardResults.classList.add("hidden");
+            boardLoading.classList.remove("hidden");
+            
+            btnAnalyze.disabled = true;
+            btnAnalyze.classList.add("opacity-50", "cursor-not-allowed");
+
+            // 1. Direct Local Matcher check
+            const normalized = sentence.trim();
+            if (OFFLINE_DB[normalized]) {
+                setTimeout(() => {
+                    const data = OFFLINE_DB[normalized];
+                    data.chinese_original = normalized;
+                    displayResults(data, "OFFLINE");
+                    enableAnalyzeButton();
+                }, 400); // Small delay for premium loading experience feel
+                return;
+            }
+
+            // 2. Call Gemini API
+            try {
+                const systemPrompt = `You are an expert, supportive Chinese Lecturer specializing in Vietnamese students. Your task is to analyze the Chinese sentence submitted by the user and return a strictly formatted JSON object. 
+
+Pedagogical Style:
+- Grammar explanations must be extremely concise, clear, and easy to grasp for beginners.
+- Always include comparison to similar grammar structures (So sánh cấu trúc tương đồng) to prevent common mistakes.
+- Word-by-word breakdown must tag the exact HSK level (from HSK 1 to HSK 6).
+
+Expected Output JSON Schema:
+{
+  "translation": "Dịch nghĩa tiếng Việt tự nhiên, mượt mà",
+  "pinyin": "Phiên âm Pinyin toàn bộ câu",
+  "vocabulary": [
+    {
+      "word": "Từ vựng (Chữ Hán)",
+      "pinyin": "Phiên âm",
+      "meaning": "Nghĩa tiếng Việt",
+      "hsk": "Cấp độ HSK (1-6)"
+    }
+  ],
+  "grammar_analysis": [
+    {
+      "point": "Tên cấu trúc ngữ pháp chính phát hiện trong câu",
+      "explanation": "Giải thích ngắn gọn, dễ hiểu",
+      "comparison": "So sánh với cấu trúc tương đồng hoặc lưu ý cách dùng dễ nhầm lẫn"
+    }
+  ]
+}`;
+
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const requestBody = {
+                    contents: [
+                        { parts: [{ text: `Phân tích câu này: "${normalized}"` }] }
+                    ],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    },
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    }
+                };
+
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                
+                // Parse text content from Gemini candidate
+                const textResult = responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!textResult) {
+                    throw new Error("No text candidates returned from model");
+                }
+
+                const cleanedJSON = cleanJSONString(textResult);
+                const parsedData = JSON.parse(cleanedJSON);
+                
+                // Display results via API mode
+                parsedData.chinese_original = normalized;
+                displayResults(parsedData, "API");
+
+            } catch (err) {
+                console.warn("Gemini API call failed, transitioning seamlessly to offline database: ", err);
+                // Fallback seamlessly: Search for matching parts or pick a highly related sentence from offline
+                let fallbackData = null;
+                let bestMatch = null;
+                let maxCommonChars = -1;
+
+                // Simple keyword/char matching to find the closest helper sentence
+                for (const key of Object.keys(OFFLINE_DB)) {
+                    let common = 0;
+                    for (const char of normalized) {
+                        if (key.includes(char)) {
+                            common++;
+                        }
+                    }
+                    if (common > maxCommonChars) {
+                        maxCommonChars = common;
+                        bestMatch = key;
+                    }
+                }
+
+                // If no significant character overlap, fall back to the first sentence
+                if (maxCommonChars > 0 && bestMatch) {
+                    fallbackData = OFFLINE_DB[bestMatch];
+                } else {
+                    fallbackData = OFFLINE_DB["我喜欢学汉语。"]; // default
+                }
+
+                // Inject original query so user sees what they typed, but with helper offline tag
+                const fallbackCopy = JSON.parse(JSON.stringify(fallbackData));
+                fallbackCopy.chinese_original = normalized + ` (Phân tích tham khảo từ mẫu: "${bestMatch}")`;
+                
+                // Premium seamless display
+                setTimeout(() => {
+                    displayResults(fallbackCopy, "OFFLINE");
+                }, 600);
+            } finally {
+                enableAnalyzeButton();
+            }
+        }
+
+        function enableAnalyzeButton() {
+            btnAnalyze.disabled = false;
+            btnAnalyze.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+    </script>
+</body>
+</html>
